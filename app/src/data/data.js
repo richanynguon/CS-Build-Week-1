@@ -25,7 +25,7 @@ class Room {
 		n_to = null,
 		s_to = null,
 		e_to = null,
-		w_to = null,
+		w_to = null
 	) {
 		this.id = id;
 		this.x = x;
@@ -36,9 +36,59 @@ class Room {
 		this.e_to = e_to;
 		this.w_to = w_to;
 	}
+	isAlive() {
+		return this.isAlive;
+	}
+	connectRoom(room, dir) {
+		this[`${dir}_to`] = room;
+	}
+	getAllAlive() {
+		let alive = [];
+		if (this.n_to.isAlive()) {
+			alive.push(this.n_to.id);
+		}
+		if (this.s_to.isAlive()) {
+			alive.push(this.s_to.id);
+		}
+		if (this.e_to.isAlive()) {
+			alive.push(this.e_to.id);
+		}
+		if (this.w_to.isAlive()) {
+			alive.push(this.w_to.id);
+    }
+    return alive
+	}
 }
 
-function generateMap(nByN) {
+function connectRooms(grid, nByN, roomsAmount) {
+	let rooms = [];
+	let roomCount = 0;
+	for (array in grid) {
+		for (entry in grid[array]) {
+			rooms.push(grid[array][entry]);
+		}
+	}
+	for (const [idx, value] of rooms.entries()) {
+		if (idx + nByN < roomsAmount) {
+			rooms[idx].connectRoom(rooms[idx + nByN], "s");
+		}
+		if (idx - nByN >= 0) {
+			rooms[idx].connectRoom(rooms[idx - nByN], "n");
+		}
+		if (idx % nByN < nByN - 1) {
+			rooms[idx].connectRoom(rooms[idx + 1], "e");
+		}
+		if (idx % nByN > 0) {
+			rooms[idx].connectRoom(rooms[idx + 1], "w");
+		}
+		const xCoord = roomCount % nByN;
+		const yCoord = Math.floor(roomCount / nByN);
+		grid[yCoord][xCoord] = value;
+		roomCount += 1;
+	}
+}
+
+function generateRooms(nByN) {
 	const grid = Array(nByN).fill(null);
 	const width = nByN;
 	const height = nByN;
@@ -51,10 +101,11 @@ function generateMap(nByN) {
 		const xCoord = roomCount % width;
 		const yCoord = Math.floor(roomCount / width);
 		const roomId = roomCount;
-		grid[yCoord][xCoord] = new Room( roomId, xCoord, yCoord);
+		grid[yCoord][xCoord] = new Room(roomId, xCoord, yCoord);
 		roomCount += 1;
 	}
+	connectRooms(grid, nByN, roomsAmount);
 	console.log(grid);
 }
 
-generateMap(10);
+generateRooms(10);
