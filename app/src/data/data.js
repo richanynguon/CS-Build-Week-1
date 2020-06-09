@@ -55,19 +55,19 @@ class Room {
 		}
 		if (this.w_to.isAlive()) {
 			alive.push(this.w_to.id);
-    }
-    return alive
+		}
+		return alive;
 	}
 }
 
 function connectRooms(grid, nByN, roomsAmount) {
 	let rooms = [];
 	let roomCount = 0;
-	for (array in grid) {
-		for (entry in grid[array]) {
-			rooms.push(grid[array][entry]);
-		}
-	}
+	grid.forEach((array, arrIdx) => {
+		grid.forEach((entry, entryIdx) => {
+			rooms.push(grid[arrIdx][entryIdx]);
+		});
+	});
 	for (const [idx, value] of rooms.entries()) {
 		if (idx + nByN < roomsAmount) {
 			rooms[idx].connectRoom(rooms[idx + nByN], "s");
@@ -90,22 +90,22 @@ function connectRooms(grid, nByN, roomsAmount) {
 
 function generateRooms(nByN) {
 	const grid = Array(nByN).fill(null);
-	const width = nByN;
-	const height = nByN;
 	const roomsAmount = nByN ** 2;
 	let roomCount = 0;
-	for (i in grid) {
-		grid[i] = Array(nByN).fill(null);
-	}
+	grid.forEach((item, idx) => {
+		grid[idx] = Array(nByN).fill(null);
+	});
+
 	while (roomCount < roomsAmount) {
-		const xCoord = roomCount % width;
-		const yCoord = Math.floor(roomCount / width);
+		const xCoord = roomCount % nByN;
+		const yCoord = Math.floor(roomCount / nByN);
 		const roomId = roomCount;
 		grid[yCoord][xCoord] = new Room(roomId, xCoord, yCoord);
 		roomCount += 1;
 	}
 	connectRooms(grid, nByN, roomsAmount);
-	console.log(grid);
+	return grid;
 }
+// console.log(generateRooms(10));
 
-generateRooms(10);
+export const Rooms = generateRooms(10);
