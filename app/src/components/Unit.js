@@ -4,14 +4,17 @@ import { UnitContainer } from "./styles";
 import { Rooms } from "../data/data";
 
 export default function Unit(info) {
-	const { isAlive, id, x, y, n_to, s_to, e_to, w_to } = info.info;
-	useEffect(() => {}, [isAcitve]);
+	const { isAlive, id, x, y } = info.info;
+	const [invert, setInvert] = useState(false);
+	useEffect(() => {}, [isAlive, invert]);
 	return (
 		<UnitContainer
 			isAlive={isAlive}
 			onClick={() => {
-				Rooms[x][y].isAlive = !Rooms[x][y].isAlive;
-				console.log(Rooms[x][y].isAlive);
-			}}></UnitContainer>
+				Rooms[y][x].isAlive = !Rooms[y][x].isAlive;
+				setInvert(Rooms[y][x].isAlive);
+			}}>
+
+		</UnitContainer>
 	);
 }

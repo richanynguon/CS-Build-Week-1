@@ -25,7 +25,11 @@ class Room {
 		n_to = null,
 		s_to = null,
 		e_to = null,
-		w_to = null
+		w_to = null,
+		ne_to = null,
+		nw_to = null,
+		se_to = null,
+		sw_to = null
 	) {
 		this.id = id;
 		this.x = x;
@@ -35,28 +39,59 @@ class Room {
 		this.s_to = s_to;
 		this.e_to = e_to;
 		this.w_to = w_to;
+		this.ne_to = ne_to;
+		this.nw_to = nw_to;
+		this.se_to = se_to;
+		this.sw_to = sw_to;
 	}
-	isAlive() {
-		return this.isAlive;
-	}
+
 	connectRoom(room, dir) {
 		this[`${dir}_to`] = room;
 	}
 	getAllAlive() {
 		let alive = [];
-		if (this.n_to.isAlive()) {
-			alive.push(this.n_to.id);
+		if (this.n_to) {
+			if (this.n_to.isAlive) {
+				alive.push({ n: this.n_to.id });
+			}
 		}
-		if (this.s_to.isAlive()) {
-			alive.push(this.s_to.id);
+		if (this.s_to) {
+			if (this.s_to.isAlive) {
+				alive.push({ s: this.s_to.id });
+			}
 		}
-		if (this.e_to.isAlive()) {
-			alive.push(this.e_to.id);
+		if (this.e_to) {
+			if (this.e_to.isAlive) {
+				alive.push({ e: this.e_to.id });
+			}
 		}
-		if (this.w_to.isAlive()) {
-			alive.push(this.w_to.id);
+		if (this.w_to) {
+			if (this.w_to.isAlive) {
+				alive.push({ w: this.w_to.id });
+			}
 		}
-		return alive;
+		if (this.nw_to) {
+			if (this.nw_to.isAlive) {
+				alive.push({ nw: this.nw_to.id });
+			}
+		}
+		if (this.sw_to) {
+			if (this.sw_to.isAlive) {
+				alive.push({ sw: this.sw_to.id });
+			}
+		}
+		if (this.se_to) {
+			if (this.se_to.isAlive) {
+				alive.push({ se: this.se_to.id });
+			}
+		}
+		if (this.ne_to) {
+			if (this.ne_to.isAlive) {
+				alive.push({ ne: this.ne_to.id });
+			}
+		}
+
+		return alive.length;
 	}
 }
 
@@ -75,11 +110,23 @@ function connectRooms(grid, nByN, roomsAmount) {
 		if (idx - nByN >= 0) {
 			rooms[idx].connectRoom(rooms[idx - nByN], "n");
 		}
+		if (idx % nByN < nByN - 1 && idx + 1 - nByN >= 0) {
+			rooms[idx].connectRoom(rooms[idx - nByN + 1], "ne");
+		}
+		if (idx % nByN < nByN - 1 && idx + 1 + nByN < roomsAmount) {
+			rooms[idx].connectRoom(rooms[idx + nByN + 1], "se");
+		}
 		if (idx % nByN < nByN - 1) {
 			rooms[idx].connectRoom(rooms[idx + 1], "e");
 		}
+		if ((idx % nByN) - 1 > 0 && idx + 1 - nByN >= 0) {
+			rooms[idx].connectRoom(rooms[idx - nByN - 1], "nw");
+		}
+		if ((idx % nByN) - 1 > 0 && idx + 1 + nByN < roomsAmount) {
+			rooms[idx].connectRoom(rooms[idx + nByN - 1], "sw");
+		}
 		if (idx % nByN > 0) {
-			rooms[idx].connectRoom(rooms[idx + 1], "w");
+			rooms[idx].connectRoom(rooms[idx - 1], "w");
 		}
 		const xCoord = roomCount % nByN;
 		const yCoord = Math.floor(roomCount / nByN);
