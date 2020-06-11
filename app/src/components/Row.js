@@ -9,8 +9,8 @@ export default function Row(array) {
 	}, [array]);
 	return (
 		<RowContainer>
-			{elements.map((unit) => (
-				<Unit info={unit}/>
+			{elements.map((unit, idx) => (
+				<Unit key={`${idx << 4}`} info={unit}/>
 			))}
 		</RowContainer>
 	);

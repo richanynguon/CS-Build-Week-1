@@ -1,14 +1,13 @@
-import React from "react";
-import { Rooms } from "../data/data";
+import React, { useContext } from "react";
 import { WindowContainer } from "./styles";
 import Row from "./Row";
-
+import { RoomContext } from "../roomContext";
 export default function StimulationWindow() {
-
+	const { current } = useContext(RoomContext);
 	return (
 		<WindowContainer>
-			{Rooms.map((array) => {
-				return <Row array={array} />;
+			{current.matrix.map((array, idx) => {
+				return <Row key={`${idx << 3}`} array={array} />;
 			})}
 		</WindowContainer>
 	);

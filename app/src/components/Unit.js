@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
+import React, { useEffect, useState, useContext } from "react";
 import { UnitContainer } from "./styles";
-import { Rooms } from "../data/data";
+import { RoomContext } from "../roomContext";
 
 export default function Unit(info) {
-	const { isAlive, id, x, y } = info.info;
+	const { current } = useContext(RoomContext);
+	const { isAlive, x, y } = info.info;
 	const [invert, setInvert] = useState(false);
+	const { matrix } = current;
 	useEffect(() => {}, [isAlive, invert]);
 	return (
 		<UnitContainer
 			isAlive={isAlive}
 			onClick={() => {
-				Rooms[y][x].isAlive = !Rooms[y][x].isAlive;
-				setInvert(Rooms[y][x].isAlive);
-			}}>
-
-		</UnitContainer>
+				matrix[y][x].isAlive = !matrix[y][x].isAlive;
+				setInvert(!invert);
+			}}></UnitContainer>
 	);
 }
