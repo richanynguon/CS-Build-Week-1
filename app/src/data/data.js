@@ -155,4 +155,4 @@ function generateRooms(nByN) {
 }
 // console.log(generateRooms(10));
 
-export const Rooms = generateRooms(10);
+export const Rooms = generateRooms(15);

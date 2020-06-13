@@ -29,3 +29,5 @@ export const ButtonContainer = styled.div`
 	display: flex;
 	justify-content: center;
 `;
+
+export const AppContainer = styled.div`	margin: 0 auto;`
