@@ -16,7 +16,7 @@ to general all neighbors it needs to check all neghbors state at every "next ste
 
 */
 
-class Room {
+export class Room {
 	constructor(
 		id,
 		x,
@@ -135,7 +135,7 @@ function connectRooms(grid, nByN, roomsAmount) {
 	}
 }
 
-function generateRooms(nByN) {
+export function generateRooms(nByN) {
 	const grid = Array(nByN).fill(null);
 	const roomsAmount = nByN ** 2;
 	let roomCount = 0;
@@ -155,4 +155,4 @@ function generateRooms(nByN) {
 }
 // console.log(generateRooms(10));
 
-export const Rooms = generateRooms(15);
+export const Rooms = generateRooms(10);

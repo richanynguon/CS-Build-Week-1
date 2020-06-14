@@ -1,21 +1,24 @@
+import { Rooms, generateRooms, Room } from "../data/data";
+
 class FrameBuffer {
-	constructor(matrixData) {
-		this.data = matrixData;
+	constructor() {
 		this.storage = [];
 	}
 	clear() {
 		this.storage = [];
 	}
-	draw() {
-		const units = this.prep();
-		const matrix = this.data;
-		const zombie = units.filter(
+	draw(inputData) {
+		const matrix = generateRooms(10);
+		const units = this.prep(inputData);
+		const newUnits = this.prep(matrix);
+		this.copy(newUnits, units);
+		const zombie = newUnits.filter(
 			(room) => room.getAllAlive() === 3 && !room.isAlive
 		);
-		const lonely = units.filter(
+		const lonely = newUnits.filter(
 			(room) => room.getAllAlive() < 2 && room.isAlive
 		);
-		const noPrivacy = units.filter(
+		const noPrivacy = newUnits.filter(
 			(room) => room.getAllAlive() >= 4 && room.isAlive
 		);
 		lonely.forEach((room) => {
@@ -32,38 +35,63 @@ class FrameBuffer {
 		});
 		this.storage = matrix;
 	}
-	prep() {
+	copy(newUnits, oldUnits) {
+		oldUnits.forEach(
+			(element, idx) =>
+				(newUnits[idx] = new Room(
+					element.id,
+					element.x,
+					element.y,
+					element.isAlive,
+					element.n_to,
+					element.s_to,
+					element.e_to,
+					element.w_to,
+					element.ne_to,
+					element.nw_to,
+					element.se_to,
+					element.sw_to
+				))
+		);
+	}
+	prep(inputData) {
 		let units = [];
-		for (let arrayIdx = 0; arrayIdx < this.data.length; arrayIdx++) {
+		for (let arrayIdx = 0; arrayIdx < inputData.length; arrayIdx++) {
 			for (
 				let entryIdx = 0;
-				entryIdx < this.data[arrayIdx].length;
+				entryIdx < inputData[arrayIdx].length;
 				entryIdx++
 			) {
-				units.push(this.data[arrayIdx][entryIdx]);
+				units.push(inputData[arrayIdx][entryIdx]);
 			}
 		}
 		return units;
 	}
 }
 
-export class Scene {
-	constructor(data) {
-		this.current = new FrameBuffer(data);
-		this.next = new FrameBuffer(data);
+class Scene {
+	constructor() {
+		this.current = new FrameBuffer();
+		this.next = new FrameBuffer();
 	}
-	display() {
+	display(inputData) {
 		this.next.clear();
-		this.next.draw();
+		this.next.draw(inputData);
 		this.swap();
 	}
-	getBuffer() {
-		this.display();
-		return this.current.storage[0];
+	getBuffer(inputData) {
+		this.display(inputData);
+		return this.current.storage;
 	}
 	swap() {
 		const temp = this.current;
 		this.current = this.next;
 		this.next = temp;
 	}
+	clearGrid() {
+		this.display(generateRooms(10));
+		return this.current.storage;
+	}
 }
+
+export const scene = new Scene();
