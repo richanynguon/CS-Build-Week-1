@@ -153,6 +153,5 @@ export function generateRooms(nByN) {
 	connectRooms(grid, nByN, roomsAmount);
 	return grid;
 }
-// console.log(generateRooms(10));
 
 export const Rooms = generateRooms(10);

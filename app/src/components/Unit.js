@@ -14,6 +14,8 @@ export default function Unit(info) {
 			onClick={() => {
 				display[y][x].isAlive = !display[y][x].isAlive;
 				setInvert(!invert);
-			}}></UnitContainer>
+			}}>
+			{display[y][x].id}
+		</UnitContainer>
 	);
 }

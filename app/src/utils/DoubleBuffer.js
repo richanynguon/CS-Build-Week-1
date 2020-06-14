@@ -1,4 +1,4 @@
-import { Rooms, generateRooms, Room } from "../data/data";
+import { generateRooms, Room } from "../data/data";
 
 class FrameBuffer {
 	constructor() {
@@ -7,11 +7,15 @@ class FrameBuffer {
 	clear() {
 		this.storage = [];
 	}
+	setStorage(matrix) {
+		this.storage = matrix;
+	}
 	draw(inputData) {
 		const matrix = generateRooms(10);
 		const units = this.prep(inputData);
 		const newUnits = this.prep(matrix);
 		this.copy(newUnits, units);
+
 		const zombie = newUnits.filter(
 			(room) => room.getAllAlive() === 3 && !room.isAlive
 		);
@@ -21,6 +25,7 @@ class FrameBuffer {
 		const noPrivacy = newUnits.filter(
 			(room) => room.getAllAlive() >= 4 && room.isAlive
 		);
+
 		lonely.forEach((room) => {
 			const { x, y } = room;
 			matrix[y][x].isAlive = false;
@@ -33,26 +38,13 @@ class FrameBuffer {
 			const { x, y } = room;
 			matrix[y][x].isAlive = true;
 		});
-		this.storage = matrix;
+	
+		this.setStorage(matrix);
 	}
 	copy(newUnits, oldUnits) {
-		oldUnits.forEach(
-			(element, idx) =>
-				(newUnits[idx] = new Room(
-					element.id,
-					element.x,
-					element.y,
-					element.isAlive,
-					element.n_to,
-					element.s_to,
-					element.e_to,
-					element.w_to,
-					element.ne_to,
-					element.nw_to,
-					element.se_to,
-					element.sw_to
-				))
-		);
+		oldUnits.forEach((element, idx) => {
+			newUnits[idx].isAlive = element.isAlive;
+		});
 	}
 	prep(inputData) {
 		let units = [];

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 
-import { Rooms , generateRooms} from "./data/data";
+import { Rooms } from "./data/data";
 import StimulationWindow from "./components/StimulationWindow";
 import {
 	GameWindow,
@@ -15,19 +15,22 @@ import { RoomContext } from "./roomContext";
 import { scene } from "./utils/DoubleBuffer";
 
 function App() {
-	const [display, setDisplay] = useState(Rooms.slice(0));
+	const [display, setDisplay] = useState(Rooms);
 	const [counter, setCounter] = useState(0);
-	const [start, setStart] = useState(false);
-	const [intervalId, setIntervalId] = useState();
-	const [counterId, setCounterID] = useState();
+	const [id, setId] = useState(false);
 
-	const update = async () => {
-		const displayCopy = await display.slice(0);
-		const newDisplay = await scene.getBuffer(displayCopy);
-		setDisplay(newDisplay)
+	const update = () => {
+		const newDisplay = scene.getBuffer(display);
+		setDisplay(newDisplay);
 		let newCount = counter + 1;
-		await setCounter(newCount);
+		setCounter(newCount);
 	};
+
+	useEffect(() => {
+		if (id === true) {
+			setTimeout(update,1000)
+		}
+	}, [id, counter]);
 
 	return (
 		<RoomContext.Provider value={{ display, setDisplay }}>
@@ -60,13 +63,8 @@ function App() {
 						}}>
 						Next
 					</button>
-					<button
-						onClick={() => {
-							update();
-						}}>
-						Start
-					</button>
-					<button onClick={() => {}}>Pause</button>
+					<button onClick={() => {setId(true)}}>Start</button>
+					<button onClick={() => {setId(false)}}>Pause</button>
 				</ButtonContainer>
 			</div>
 		</RoomContext.Provider>
