@@ -1,22 +1,4 @@
-/*
-
-generate world
-generate a matrix with 10 rows of 10 elements
-each element I want to have a state whether its dead or alive
-to general all neighbors it needs to check all neghbors state at every "next step"
-
-{
-  id: room#
-  state: alive or dead
-  n_to:
-  s_to:
-  e_to:
-  w_to:
-}
-
-*/
-
-export class Room {
+class Room {
 	constructor(
 		id,
 		x,
@@ -48,7 +30,7 @@ export class Room {
 	connectRoom(room, dir) {
 		this[`${dir}_to`] = room;
 	}
-	
+
 	getAllAlive() {
 		let alive = [];
 		const dir = [
