@@ -48,46 +48,24 @@ export class Room {
 	connectRoom(room, dir) {
 		this[`${dir}_to`] = room;
 	}
+	
 	getAllAlive() {
 		let alive = [];
-		if (this.n_to) {
-			if (this.n_to.isAlive) {
-				alive.push({ n: this.n_to.id });
-			}
-		}
-		if (this.s_to) {
-			if (this.s_to.isAlive) {
-				alive.push({ s: this.s_to.id });
-			}
-		}
-		if (this.e_to) {
-			if (this.e_to.isAlive) {
-				alive.push({ e: this.e_to.id });
-			}
-		}
-		if (this.w_to) {
-			if (this.w_to.isAlive) {
-				alive.push({ w: this.w_to.id });
-			}
-		}
-		if (this.nw_to) {
-			if (this.nw_to.isAlive) {
-				alive.push({ nw: this.nw_to.id });
-			}
-		}
-		if (this.sw_to) {
-			if (this.sw_to.isAlive) {
-				alive.push({ sw: this.sw_to.id });
-			}
-		}
-		if (this.se_to) {
-			if (this.se_to.isAlive) {
-				alive.push({ se: this.se_to.id });
-			}
-		}
-		if (this.ne_to) {
-			if (this.ne_to.isAlive) {
-				alive.push({ ne: this.ne_to.id });
+		const dir = [
+			this.n_to,
+			this.ne_to,
+			this.nw_to,
+			this.s_to,
+			this.se_to,
+			this.sw_to,
+			this.e_to,
+			this.w_to,
+		];
+		for (let i = 0; i < dir.length; i++) {
+			if (dir[i]) {
+				if (dir[i].isAlive === true) {
+					alive.push(dir[i]);
+				}
 			}
 		}
 
@@ -95,44 +73,36 @@ export class Room {
 	}
 }
 
-function connectRooms(grid, nByN, roomsAmount) {
-	let rooms = [];
-	let roomCount = 0;
-	grid.forEach((array, arrIdx) => {
-		grid.forEach((entry, entryIdx) => {
-			rooms.push(grid[arrIdx][entryIdx]);
+function connectRooms(matrix) {
+	const diffX = [-1, 0, 1];
+	const diffY = [-1, 0, 1];
+	const dir = ["nw", "w", "sw", "s", "n", "se", "e", "ne"];
+	matrix.forEach((array, arrIdx) => {
+		matrix.forEach((entry, entryIdx) => {
+			let dirCount = 0;
+			for (let di in diffX) {
+				for (let dj in diffY) {
+					try {
+						const nx = diffX[di] + entryIdx;
+						const ny = diffY[dj] + arrIdx;
+						if (
+							Math.min(ny, nx) >= 0 &&
+							matrix[ny][nx] &&
+							matrix[ny][nx] != matrix[arrIdx][entryIdx]
+						) {
+							matrix[arrIdx][entryIdx].connectRoom(
+								matrix[ny][nx],
+								dir[dirCount]
+							);
+							dirCount += 1;
+						}
+					} catch (err) {
+						console.log(err.message);
+					}
+				}
+			}
 		});
 	});
-	for (const [idx, value] of rooms.entries()) {
-		if (idx + nByN < roomsAmount) {
-			rooms[idx].connectRoom(rooms[idx + nByN], "s");
-		}
-		if (idx - nByN >= 0) {
-			rooms[idx].connectRoom(rooms[idx - nByN], "n");
-		}
-		if (idx % nByN < nByN - 1 && idx + 1 - nByN >= 0) {
-			rooms[idx].connectRoom(rooms[idx - nByN + 1], "ne");
-		}
-		if (idx % nByN < nByN - 1 && idx + 1 + nByN < roomsAmount) {
-			rooms[idx].connectRoom(rooms[idx + nByN + 1], "se");
-		}
-		if (idx % nByN < nByN - 1) {
-			rooms[idx].connectRoom(rooms[idx + 1], "e");
-		}
-		if ((idx % nByN) - 1 > 0 && idx + 1 - nByN >= 0) {
-			rooms[idx].connectRoom(rooms[idx - nByN - 1], "nw");
-		}
-		if ((idx % nByN) - 1 > 0 && idx + 1 + nByN < roomsAmount) {
-			rooms[idx].connectRoom(rooms[idx + nByN - 1], "sw");
-		}
-		if (idx % nByN > 0) {
-			rooms[idx].connectRoom(rooms[idx - 1], "w");
-		}
-		const xCoord = roomCount % nByN;
-		const yCoord = Math.floor(roomCount / nByN);
-		grid[yCoord][xCoord] = value;
-		roomCount += 1;
-	}
 }
 
 export function generateRooms(nByN) {
@@ -150,7 +120,7 @@ export function generateRooms(nByN) {
 		grid[yCoord][xCoord] = new Room(roomId, xCoord, yCoord);
 		roomCount += 1;
 	}
-	connectRooms(grid, nByN, roomsAmount);
+	connectRooms(grid);
 	return grid;
 }
 
