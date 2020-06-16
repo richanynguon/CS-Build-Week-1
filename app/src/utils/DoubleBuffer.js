@@ -1,4 +1,4 @@
-import { generateRooms, Room } from "../data/data";
+import { generateRooms } from "../data/data";
 
 class FrameBuffer {
 	constructor() {
@@ -11,7 +11,7 @@ class FrameBuffer {
 		this.storage = matrix;
 	}
 	draw(inputData) {
-		const matrix = generateRooms(10);
+		const matrix = generateRooms(20);
 		const units = this.prep(inputData);
 		const newUnits = this.prep(matrix);
 		this.copy(newUnits, units);
@@ -81,7 +81,7 @@ class Scene {
 		this.next = temp;
 	}
 	clearGrid() {
-		this.display(generateRooms(10));
+		this.display(generateRooms(20));
 		return this.current.storage;
 	}
 }

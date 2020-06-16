@@ -106,4 +106,4 @@ export function generateRooms(nByN) {
 	return grid;
 }
 
-export const Rooms = generateRooms(10);
+export const Rooms = generateRooms(20);

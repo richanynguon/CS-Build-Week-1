@@ -28,7 +28,7 @@ function App() {
 
 	useEffect(() => {
 		if (id === true) {
-			setTimeout(update,1000)
+			setTimeout(update,1000/20)
 		}
 	}, [id, counter]);
 
